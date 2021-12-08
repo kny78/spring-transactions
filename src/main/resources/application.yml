@@ -1,0 +1,20 @@
+spring:
+  main:
+    banner-mode: off
+
+  datasource:
+    hikari:
+      auto-commit: false
+
+    url: jdbc:postgresql://localhost:5432/knytest
+    driver-class-name: org.postgresql.Driver
+    username: knytest
+    password: fzhsNuwgmJsphjyoxgecsofd9zm3uk
+
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+      use-new-id-generator-mappings: true
+
+
