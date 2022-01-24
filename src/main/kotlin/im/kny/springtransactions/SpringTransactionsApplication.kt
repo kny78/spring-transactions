@@ -1,12 +1,13 @@
 package im.kny.springtransactions
 
-import org.springframework.boot.SpringBootConfiguration
+import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.runApplication
+import org.springframework.context.annotation.ComponentScan
 
-@SpringBootApplication
+@SpringBootApplication()
+@ComponentScan(basePackages = ["im.kny"])
 class SpringTransactionsApplication
 
 fun main(args: Array<String>) {
-	runApplication<SpringTransactionsApplication>(*args)
+    SpringApplication.run(SpringTransactionsApplication::class.java, *args)
 }
