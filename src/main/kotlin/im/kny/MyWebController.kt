@@ -15,9 +15,6 @@ import java.io.FileInputStream
 class MyWebController @Autowired constructor() {
 
 
-    // private val filename = "/home/kny/Downloads/Fedora-Workstation-Live-x86_64-34_Beta-1.3.iso"
-    private val filename = "/home/kny/Downloads/dump.txt"
-
     @GetMapping("/other")
     fun getMyData(): ResponseEntity<Mono<InputStreamResource>> {
         return ResponseEntity
@@ -31,10 +28,11 @@ class MyWebController @Autowired constructor() {
             )
     }
 
+
     private fun getInputStream(): Mono<BufferedInputStream> {
         return Mono
             .fromCallable {
-                BufferedInputStream(FileInputStream(filename))
+                BufferedInputStream(FileInputStream("/home/kny/Downloads/dump.txt"))
             }
     }
 }

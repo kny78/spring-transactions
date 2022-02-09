@@ -17,4 +17,5 @@ spring:
       ddl-auto: none
       use-new-id-generator-mappings: true
 
-
+server:
+  port: 18080
