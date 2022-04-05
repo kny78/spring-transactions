@@ -1,5 +1,7 @@
 package im.kny
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.InputStreamResource
 import org.springframework.http.ResponseEntity
@@ -23,6 +25,7 @@ class MyWebController @Autowired constructor() {
                 getInputStream()
                     .flatMap { x ->
                         println("Mono.just()")
+                        LOG.error("Here I am")
                         Mono.just(InputStreamResource(x))
                     }
             )
@@ -34,5 +37,9 @@ class MyWebController @Autowired constructor() {
             .fromCallable {
                 BufferedInputStream(FileInputStream("/home/kny/Downloads/dump.txt"))
             }
+    }
+
+    companion object{
+        private val LOG: Logger by lazy(LazyThreadSafetyMode.NONE) { LoggerFactory.getLogger(MyWebController::class.java) }
     }
 }
