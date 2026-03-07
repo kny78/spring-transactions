@@ -7,9 +7,8 @@ import org.junit.jupiter.api.Test
 import org.postgresql.jdbc.PgConnection
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import javax.persistence.EntityManager
-import javax.persistence.EntityManagerFactory
-import javax.persistence.SynchronizationType
+import jakarta.persistence.EntityManager
+import jakarta.persistence.EntityManagerFactory
 
 @SpringBootTest(
     classes = [MySpringConfig::class]
@@ -18,9 +17,8 @@ class NonUniqueTransaction_ok_Test @Autowired constructor(
     val entityManagerFactory: EntityManagerFactory
 ) {
 
-
     @Test
-    fun differentTxOk() {
+    fun `different Tx Ok`() {
         val em1 = entityManagerFactory.createEntityManager()!!
         val em2 = entityManagerFactory.createEntityManager()!!
 
@@ -63,7 +61,9 @@ class NonUniqueTransaction_ok_Test @Autowired constructor(
             .unwrap(SessionImpl::class.java)
 
         val pgConn = session
-            .connection()
+            .jdbcCoordinator
+            .logicalConnection
+            .physicalConnection
             .unwrap(PgConnection::class.java)
 
         val backendPID = pgConn.backendPID

@@ -1,11 +1,12 @@
 spring:
   main:
     banner-mode: off
+  flyway:
+    enabled: true
 
   datasource:
     hikari:
       auto-commit: false
-
     url: jdbc:postgresql://localhost:5432/knytest
     driver-class-name: org.postgresql.Driver
     username: knytest
@@ -16,5 +17,4 @@ spring:
     hibernate:
       ddl-auto: none
       use-new-id-generator-mappings: true
-
 

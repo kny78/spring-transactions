@@ -1,7 +1,7 @@
 package im.kny
 
 import org.springframework.stereotype.Component
-import javax.persistence.EntityManagerFactory
+import jakarta.persistence.EntityManagerFactory
 
 @Component
 class TxManagerImpl(

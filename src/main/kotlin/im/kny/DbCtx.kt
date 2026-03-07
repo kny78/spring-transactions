@@ -1,22 +1,21 @@
 package im.kny
 
+import jakarta.persistence.EntityManager
+import jakarta.persistence.EntityTransaction
 import org.hibernate.internal.SessionImpl
 import org.postgresql.jdbc.PgConnection
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import javax.persistence.EntityManager
-import javax.persistence.EntityTransaction
 
 class DbCtx(val entityManager: EntityManager) : AutoCloseable {
 
-
-    val transaction: EntityTransaction// = em.transaction
-
+    /**
+     * Represents the transaction we are in.
+     */
+    val transaction: EntityTransaction
 
     init {
-
         LOG.info("backendPID: ${backendPID()}")
-
         transaction = entityManager.transaction
         transaction.begin()
     }
@@ -25,7 +24,7 @@ class DbCtx(val entityManager: EntityManager) : AutoCloseable {
 
     override fun close() {
         when {
-            transaction == null -> LOG.debug("Transaction is already closed.")
+            transaction == null -> LOG.debug("Transaction is `null`, should not happen.")
             !transaction.rollbackOnly -> transaction.commit()
             else -> {
                 val msg = "Transaction is not committed or rolled back. Rolling back!"
@@ -46,7 +45,9 @@ class DbCtx(val entityManager: EntityManager) : AutoCloseable {
 
         val pgConn = entityManager
             .unwrap(SessionImpl::class.java)
-            .connection()
+            .jdbcCoordinator
+            .logicalConnection
+            .physicalConnection
             .unwrap(PgConnection::class.java)
 
         val backendPID = pgConn.backendPID

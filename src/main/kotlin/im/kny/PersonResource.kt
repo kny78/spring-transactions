@@ -2,12 +2,12 @@ package im.kny
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import jakarta.inject.Inject
+import jakarta.ws.rs.*
+import jakarta.ws.rs.core.MediaType
+import jakarta.ws.rs.core.Response
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import javax.inject.Inject
-import javax.ws.rs.*
-import javax.ws.rs.core.MediaType
-import javax.ws.rs.core.Response
 
 @Path("/persons")
 class PersonResource {

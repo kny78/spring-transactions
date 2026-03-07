@@ -1,51 +1,41 @@
 package im.kny
 
 import im.kny.springtransactions.MySpringConfig
+import jakarta.persistence.EntityManager
 import org.hibernate.internal.SessionImpl
-import org.junit.jupiter.api.Assertions.assertNotEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.postgresql.jdbc.PgConnection
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import jakarta.persistence.EntityManager
-import jakarta.persistence.EntityManagerFactory
-import jakarta.persistence.SynchronizationType
-
 
 @SpringBootTest(
     classes = [MySpringConfig::class]
 )
-class NonUniqueTransaction_fails_Test @Autowired constructor(
-    val entityManagerFactory: EntityManagerFactory
+class SlowServiceTest @Autowired constructor(
+    val txManager: TxManager
 ) {
 
+    @BeforeEach
+    fun beforeEach() {
+        txManager.autoCommitTx { dbCtx -> dbCtx.person.deleteAll() }
+    }
 
     @Test
-    fun differentTxFails() {
-        val em1 = entityManagerFactory.createEntityManager()!!
-        val em2 = entityManagerFactory.createEntityManager()!!
+    fun `different Tx Ok`() {
 
-        val tx1 = em1.transaction
-        tx1.begin()
-
-        val tx2 = em2.transaction
-        tx2.begin()
-
-        try {
-            printCon("em1", em1)
-            printCon("em2", em2)
-
-            assertNotEquals(
-                backendPid(em1),
-                backendPid(em2),
-                "Expect different backendPids"
-            )
-        } finally {
-            tx2.rollback()
-            tx1.rollback()
+        val donald = txManager.autoCommitTx { dbCtx ->
+            dbCtx.person.persist(Person("Donald Duck", null))
         }
 
+        val image = getSlowImage(donald.id!!)
+        val donald2 = txManager.autoCommitTx { dbCtx ->
+            val donaldInTx = dbCtx.person.byId(donald.id)
+            donaldInTx.image = image
+        }
+        println(donald2)
     }
+
 
     private fun printCon(str: String, em: EntityManager) {
         val backendPID = backendPid(em)
@@ -67,4 +57,10 @@ class NonUniqueTransaction_fails_Test @Autowired constructor(
     }
 
 
+    private fun getSlowImage(personId: Long): String {
+        println("Waiting for image")
+        Thread.sleep(1_000L)
+        println("Got image")
+        return "Url for $personId"
+    }
 }

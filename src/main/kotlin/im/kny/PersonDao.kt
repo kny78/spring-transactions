@@ -1,6 +1,7 @@
 package im.kny
 
-import javax.persistence.EntityManager
+import jakarta.persistence.EntityManager
+
 
 class PersonDao(val entityManager: EntityManager) {
 
@@ -20,5 +21,11 @@ class PersonDao(val entityManager: EntityManager) {
             .createQuery("""SELECT p from Person p where p.id=:id""", Person::class.java)
             .setParameter("id", id)
             .singleResult
+    }
+
+    fun deleteAll() {
+        entityManager
+            .createQuery("DELETE from Person")
+            .executeUpdate()
     }
 }
