@@ -11,9 +11,7 @@ class TxManagerImpl(
     override fun <R> autoCommitTx(block: (dbCtx: DbCtx) -> R): R {
         val entityManager = entityManagerFactory.createEntityManager()
 
-        return DbCtx(
-            entityManager = entityManager
-        ).use {
+        return DbCtx(entityManager = entityManager).use {
             try {
                 block(it)
             } catch (e: Exception) {
