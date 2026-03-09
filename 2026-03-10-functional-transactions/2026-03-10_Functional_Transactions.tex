@@ -105,7 +105,7 @@
                 personInTx
             }
     
-            return personInTx
+            return person2
         }
     \end{kotlincode}
     }
@@ -120,18 +120,17 @@
     % TxManager
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         \definecolor{bg}{rgb}{0.95,0.95,0.95}
-    \defverbatim[colored]\txManagerImpl{
+    \defverbatim[colored]\txManager{
         \begin{kotlincode}
-        class TxManagerImpl(val entityManagerFactory: EntityManagerFactory)
-            : TxManager {
+        class TxManager(val entityManagerFactory: EntityManagerFactory) {
             
-            override fun <R> autoCommitTx(block: (dbCtx: DbCtx) -> R): R {
+            fun <R> autoCommitTx(block: (dbCtx: DbCtx) -> R): R {
                 val em = entityManagerFactory.createEntityManager()
 
                 // .use{} implies AutoCloseable
-                return DbCtx(entityManager = em).use {
+                return DbCtx(em).use { dbCtx ->
                     try {
-                        block(it)
+                        block(dbCtx)
                     } catch (e: Exception) {
                         it.setRollbackOnly()
                         throw e
@@ -144,22 +143,22 @@
 
 
     \begin{frame}
-        \frametitle{TxManagerImpl}
-    \txManagerImpl
+        \frametitle{TxManager}
+    \txManager
     \end{frame}
 
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % DbCtx
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    \defverbatim[colored]\dbCtxImpl{
+    \defverbatim[colored]\dbCtx{
         \begin{kotlincode}
-        class DbCtxImpl(val entityManager: EntityManager) : DbCtx {
-            val transaction: EntityTransaction = entityManager.transaction
+        class DbCtx(val em: EntityManager) : AutoCloseable {
+            val transaction: EntityTransaction = em.transaction
             init { transaction.begin() }
 
-            val person: PersonDao by lazy { PersonDao(entityManager) }
-            val image: ImageDao by lazy { ImageDao(entityManager) }
+            val person: PersonDao by lazy { PersonDao(em) }
+            val image: ImageDao by lazy { ImageDao(em) }
             
             override fun close() {
                 when {
@@ -170,15 +169,16 @@
                     }
                     else -> transaction.commit()
                 }
-                if (entityManager.isOpen) entityManager.close()
+
+                if (em.isOpen) em.close()
             }
         }
     \end{kotlincode}
     }
 
     \begin{frame}
-        \frametitle{DbCtxImpl}
-    \dbCtxImpl
+        \frametitle{DbCtx}
+    \dbCtx
     \end{frame}
 
 
@@ -236,3 +236,5 @@
     \end{frame}
 
 \end{document}
+
+% vim: ts=4 expandtab
