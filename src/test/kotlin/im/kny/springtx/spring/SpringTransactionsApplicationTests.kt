@@ -1,4 +1,4 @@
-package im.kny.springtransactions
+package im.kny.springtx.spring
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest

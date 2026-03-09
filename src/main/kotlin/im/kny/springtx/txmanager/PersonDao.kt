@@ -1,5 +1,6 @@
-package im.kny
+package im.kny.springtx.txmanager
 
+import im.kny.springtx.Person
 import jakarta.persistence.EntityManager
 
 

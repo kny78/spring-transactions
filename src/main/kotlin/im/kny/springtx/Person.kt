@@ -1,4 +1,4 @@
-package im.kny
+package im.kny.springtx
 
 import jakarta.persistence.*
 
@@ -6,7 +6,9 @@ import jakarta.persistence.*
 @Table(name="person")
 data class Person constructor(
     var name: String,
-    var image: String?,
+    @ManyToOne
+    @JoinColumn("image_id", nullable = true)
+    var image: Image?,
 ) {
     @Id
     @GeneratedValue(generator = "person_id_seq")

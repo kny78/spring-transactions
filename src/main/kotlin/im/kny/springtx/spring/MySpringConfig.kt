@@ -1,4 +1,4 @@
-package im.kny.springtransactions
+package im.kny.springtx.spring
 
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
@@ -8,9 +8,8 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 @EnableAutoConfiguration
-@ComponentScan(basePackages = ["im.kny"])
-@EntityScan(basePackages = ["im.kny"])
+@ComponentScan(basePackages = ["im.kny.springtx"])
+@EntityScan(basePackages = ["im.kny.springtx"])
 class MySpringConfig {
-
 
 }

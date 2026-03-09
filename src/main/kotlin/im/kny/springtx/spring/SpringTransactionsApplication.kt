@@ -1,6 +1,5 @@
-package im.kny.springtransactions
+package im.kny.springtx.spring
 
-import org.springframework.boot.SpringBootConfiguration
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 

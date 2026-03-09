@@ -1,4 +1,4 @@
-package im.kny
+package im.kny.springtx
 
 import org.springframework.stereotype.Component
 import jakarta.persistence.EntityManagerFactory
@@ -23,18 +23,9 @@ class TxManagerImpl(
         }
     }
 
-    override suspend fun <R> autoCommitTxSuspended(block: suspend (dbCtx: DbCtx) -> R): R {
-        val entityManager = entityManagerFactory.createEntityManager()
-
-        return DbCtx(
-            entityManager = entityManager
-        ).use {
-            try {
-                block(it)
-            } catch (e: Exception) {
-                it.setRollbackOnly()
-                throw e
-            }
+    override fun cleanDb() {
+        autoCommitTx { dbCtx ->
+            dbCtx.cleanDb()
         }
     }
 }

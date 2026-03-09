@@ -1,14 +1,14 @@
-package im.kny
+package im.kny.springtx
 
-import im.kny.springtransactions.MySpringConfig
+import im.kny.springtx.spring.MySpringConfig
+import jakarta.persistence.EntityManager
+import jakarta.persistence.EntityManagerFactory
 import org.hibernate.internal.SessionImpl
-import org.junit.jupiter.api.Assertions.assertNotEquals
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.postgresql.jdbc.PgConnection
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import jakarta.persistence.EntityManager
-import jakarta.persistence.EntityManagerFactory
 
 @SpringBootTest(
     classes = [MySpringConfig::class]
@@ -22,7 +22,7 @@ class NonUniqueTransaction_ok_Test @Autowired constructor(
         val em1 = entityManagerFactory.createEntityManager()!!
         val em2 = entityManagerFactory.createEntityManager()!!
 
-        assertNotEquals(
+        Assertions.assertNotEquals(
             backendPid(em1),
             backendPid(em2),
             "Open connection and get different backendPids"
@@ -38,7 +38,7 @@ class NonUniqueTransaction_ok_Test @Autowired constructor(
             printCon("em1", em1)
             printCon("em2", em2)
 
-            assertNotEquals(
+            Assertions.assertNotEquals(
                 backendPid(em1),
                 backendPid(em2),
                 "Expect different backendPids"
