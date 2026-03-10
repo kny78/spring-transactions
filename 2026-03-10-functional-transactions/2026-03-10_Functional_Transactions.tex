@@ -10,37 +10,38 @@
 % Background color for minted verbatim
 \definecolor{bg}{rgb}{0.95,0.95,0.95}
 \newminted{json}{fontsize=\scriptsize,
-    linenos,
-    numbersep=8pt,
-    gobble=4,
-    frame=lines,
-    bgcolor=bg,
-    framesep=3mm}
+	linenos,
+	numbersep=8pt,
+	gobble=4,
+	frame=lines,
+	bgcolor=bg,
+	framesep=3mm}
 
 \newminted{kotlin}{fontsize=\scriptsize,
-    linenos,
-    numbersep=8pt,
-    gobble=8,
-    frame=lines,
-    bgcolor=bg,
-    framesep=3mm}
+	linenos,
+	numbersep=8pt,
+	gobble=4,
+	tabsize=4,
+	frame=lines,
+	bgcolor=bg,
+	framesep=3mm}
 
 \newminted{zsh}{fontsize=\scriptsize,
-    linenos,
-    numbersep=8pt,
-    gobble=12,
-    frame=lines,
-    bgcolor=bg,
-    framesep=3mm}
+	linenos,
+	numbersep=8pt,
+	gobble=12,
+	frame=lines,
+	bgcolor=bg,
+	framesep=3mm}
 
 
 \hypersetup{
-    colorlinks   = true,    % Colours links instead of ugly boxes
-    urlcolor     = blue,    % Colour for external hyperlinks
-    linkcolor    = blue,    % Colour of internal links
-    citecolor    = red,      % Colour of citations
-%    bookmarksopen,
-%    bookmarksnumbered,
+	colorlinks   = true,	% Colours links instead of ugly boxes
+	urlcolor	 = blue,	% Colour for external hyperlinks
+	linkcolor	= blue,	% Colour of internal links
+	citecolor	= red,	  % Colour of citations
+%	bookmarksopen,
+%	bookmarksnumbered,
 }
 
 
@@ -56,245 +57,266 @@
 
 
 \begin{document}
-    \frame{\titlepage}
+	\frame{\titlepage}
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % Transaction - What is it?
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    \begin{frame}
-        \frametitle{Transaction - What is it?}
-        \begin{columns}[t]
-            \begin{column}{1\textwidth}
-                \begin{block}{Transaction}
-                        A transaction refers to a sequence of one or more operations
-                        (such as read, write, update, or delete) performed on the database
-                        as a single logical unit of work. 
-                \end{block}
-                \begin{block}{ACID}
-                        \begin{description}
-                            \item[Atomic:] Everything or nothing is committed
-                            \item[Consictent:] Always consistent with the schema after a transaction.
-                            \item[Isolation:] Transactions does not interfer with one another.
-                            \item[Durable:] Transactions are stored permanently and not lost.
-                        \end{description}
-                \end{block}
-            \end{column}
-        \end{columns}
-    \end{frame}
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	% Transaction - What is it?
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\begin{frame}
+		\frametitle{Transaction - What is it?}
+		\begin{columns}[t]
+			\begin{column}{1\textwidth}
+				\begin{block}{Transaction}
+						A transaction refers to a sequence of one or more operations
+						(such as read, write, update, or delete) performed on the database
+						as a single logical unit of work. 
+				\end{block}
+				\begin{block}{ACID}
+						\begin{description}
+							\item[Atomic:] Everything or nothing is committed
+							\item[Consictent:] Always consistent with the schema after a transaction.
+							\item[Isolation:] Transactions does not interfer with one another.
+							\item[Durable:] Transactions are stored permanently and not lost.
+						\end{description}
+				\end{block}
+			\end{column}
+		\end{columns}
+	\end{frame}
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %  Example of @Transactional
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    \defverbatim[colored]\transactionalExample{
-        \begin{kotlincode}
-                class ImageService(val em: EntityManager) {
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	% Transactions in Java / Kotlin 
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\begin{frame}
+		\frametitle{Transactions in Java / Kotlin}
+		\begin{columns}[t]
+			\begin{column}{.55\textwidth}
 
-                    @Transactional
-                    fun doSimpleOperations(personId: Long, imageBytes: Bytearray){
-                            val person = em.findById(personId, Person::class.java)
-                            person.image = imageBytes
-                            em.persist(person)
-                    }
+				\begin{block}{@Transactional}
+			@Transactional should begin a transaction before the method and commit after.
 
-                    @Transactional
-                    fun doAdvancedOperations(personId: Long, imageBytes: Bytearray){
-                            val person = em.findById(personId, Person::class.java)
-                            someOtherService.addImageToPerson(person)
-                            em.persist(person)
-                    }
-                }
-
-                class SomeOtherService(val em: EntityManager) {
-                        
-                    fun addImageToPerson(person): Person {
-                            // Is this function in a @Transaction?
-                    }
-                }
-    \end{kotlincode}
-    }
+			Exceptions that leave the method will rollback the transaction.
+				\end{block}
+			\end{column}
+			\begin{column}{.45\textwidth}
+				\begin{block}{Problems}
+					\begin{enumerate}
+						\item Am I in a transaction?
+			\item Need a \textbf{bean} to begin transaction
+						\item If my transaction fails, hard to handle
+			\item Two Phase commit is over- and under-engineered
+					\end{enumerate}
+				\end{block}
+			\end{column}
+		\end{columns}
+	\end{frame}
 
 
-    \begin{frame}
-        \frametitle{Example of @Transactional}
-    \transactionalExample
-    \end{frame}
 
-    \begin{frame}
-        \frametitle{Transactions in Java / Kotlin}
-        \begin{columns}[t]
-            \begin{column}{.55\textwidth}
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%  Example of @Transactional
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\defverbatim[colored]\transactionalExample{
+		\begin{kotlincode}
+				class ImageService(val em: EntityManager) {
 
-                \begin{block}{@Transactional}
-            @Transactional should begin a transaction before the method and commit after.
+					@Transactional
+					fun doSimpleOperations(personId: Long, imageBytes: Bytearray){
+						val person = em.findById(personId, Person::class.java)
+						person.image = imageBytes
+						em.persist(person)
+					}
+			}
+	\end{kotlincode}
+	}
 
-            Exceptions that leave the method will rollback the transaction.
-                \end{block}
-            \end{column}
-            \begin{column}{.45\textwidth}
-                \begin{block}{Problems}
-                    \begin{enumerate}
-                        \item Am I in a transaction?
-            \item Need a \textbf{bean} to begin transaction
-                        \item If my transaction fails, hard to handle
-            \item Two Phase commit is over- and under-engineered
-                    \end{enumerate}
-                \end{block}
-            \end{column}
-        \end{columns}
-    \end{frame}
+	\begin{frame}
+		\frametitle{Example of @Transactional}
+	\transactionalExample
+	\end{frame}
 
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % Functional Transactions
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        \definecolor{bg}{rgb}{0.95,0.95,0.95}
-    \defverbatim[colored]\exampleTxManager{
-        \begin{kotlincode}
-        fun insertPerson(name: String, extRef: String) {
-            // Transaction 1
-            val person1 = txManager.autoCommitTx { dbCtx ->
-                dbCtx.person.insert(Person(name, extRef))
-            }
-    
-            // Slow out-of-tx operation
-            val imageBlob = slowlyFetchImage(person.externalId)
-    
-            // Transaction 2
-            val person2 = txManager.autoCommitTx { dbCtx ->
-                val personInTx = dbCtx.person.byId(person1.id)
-                personInTx.imageBlob = imageBlob
-                personInTx
-            }
-    
-            return person2
-        }
-    \end{kotlincode}
-    }
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%  Complex usage of @Transactional
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\defverbatim[colored]\transactionalComplexExample{
+		\begin{kotlincode}
+				class ImageService(val em: EntityManager) {
 
-    \begin{frame}
-        \frametitle{Functional Transactions}
-        \exampleTxManager
-    \end{frame}
+					@Transactional
+					fun doAdvancedOperations(personId: Long, imageBytes: Bytearray){
+						val person = em.findById(personId, Person::class.java)
+						someOtherService.addImageToPerson(person)
+						em.persist(person)
+					}
+				}
+
+				class SomeOtherService(val em: EntityManager) {
+						
+					fun addImageToPerson(person): Person {
+						// Is this function in a @Transaction?
+					}
+				}
+	\end{kotlincode}
+	}
+
+	\begin{frame}
+		\frametitle{Compmlex usage of @Transactional}
+	\transactionalComplexExample
+	\end{frame}
 
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % TxManager
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    \defverbatim[colored]\txManager{
-        \begin{kotlincode}
-        class TxManager(val entityManagerFactory: EntityManagerFactory) {
-            
-            fun <R> autoCommitTx(block: (dbCtx: DbCtx) -> R): R {
-                val em = entityManagerFactory.createEntityManager()
 
-                // .use{} implies AutoCloseable
-                return DbCtx(em).use { dbCtx ->
-                    try {
-                        block(dbCtx)
-                    } catch (e: Exception) {
-                        it.setRollbackOnly()
-                        throw e
-                    }
-                }
-            }
-        }
-    \end{kotlincode}
-    }
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	% Functional Transactions
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\definecolor{bg}{rgb}{0.95,0.95,0.95}
+	\defverbatim[colored]\exampleTxManager{
+		\begin{kotlincode}
+				fun insertPerson(name: String, extRef: String) {
+					// Transaction 1
+					val person1 = txManager.autoCommitTx { dbCtx ->
+						dbCtx.person.insert(Person(name, extRef))
+					}
+		
+					// Slow out-of-tx operation
+					val imageBlob = slowlyFetchImage(person.externalId)
+		
+					// Transaction 2
+					val person2 = txManager.autoCommitTx { dbCtx ->
+						val personInTx = dbCtx.person.byId(person1.id)
+						personInTx.imageBlob = imageBlob
+						personInTx
+					}
+		
+					return person2
+				}
+	\end{kotlincode}
+	}
 
-
-    \begin{frame}
-        \frametitle{TxManager}
-    \txManager
-    \end{frame}
-
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % DbCtx
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    \defverbatim[colored]\dbCtx{
-        \begin{kotlincode}
-        class DbCtx(val em: EntityManager) : AutoCloseable {
-            val transaction: EntityTransaction = em.transaction
-            init { transaction.begin() }
-
-            val person: PersonDao by lazy { PersonDao(em) }
-            val image: ImageDao by lazy { ImageDao(em) }
-            
-            override fun close() {
-                when {
-                    transaction == null -> println("init error")
-                    transaction.rollbackOnly -> {
-                        LOG.warn("Rolling back tx")
-                        transaction.rollback()
-                    }
-                    else -> transaction.commit()
-                }
-
-                if (em.isOpen) em.close()
-            }
-        }
-    \end{kotlincode}
-    }
-
-    \begin{frame}
-        \frametitle{DbCtx}
-    \dbCtx
-    \end{frame}
+	\begin{frame}
+		\frametitle{Functional Transactions}
+		\exampleTxManager
+	\end{frame}
 
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % PersonDao
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    \defverbatim[colored]\personDao{
-        \begin{kotlincode}
-        class PersonDao(val em: EntityManager) {
-            fun persist(person: Person): Person {
-                em.persist(person)
-                return person
-            }
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	% TxManager
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\defverbatim[colored]\txManager{
+		\begin{kotlincode}
+				class TxManager(val entityManagerFactory: EntityManagerFactory) {
+					
+					fun <R> autoCommitTx(block: (dbCtx: DbCtx) -> R): R {
+						val em = entityManagerFactory.createEntityManager()
 
-            fun list(): List<Person> {
-                return em.createQuery("SELECT p from Person p", Person::class.java)
-                    .resultList
-            }
-            
-            fun byId(id: Long?): Person {
-                return em
-                    .createQuery("SELECT p from Person p where p.id=:id", Person::class.java)
-                    .setParameter("id", id)
-                    .singleResult
-            }
-            
-            fun deleteAll() {
-                em.createQuery("DELETE from Person")
-                    .executeUpdate()
-            }
-        }
-    \end{kotlincode}
-    }
-
-    \begin{frame}
-        \frametitle{PersonDao}
-    \personDao
-    \end{frame}
-
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % Demo 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    \begin{frame}
-        \frametitle{Demonstration}
-    \end{frame}
+						// .use{} implies AutoCloseable
+						return DbCtx(em).use { dbCtx ->
+							try {
+								block(dbCtx)
+							} catch (e: Exception) {
+								it.setRollbackOnly()
+								throw e
+							}
+						}
+					}
+				}
+	\end{kotlincode}
+	}
 
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % The End
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    \begin{frame}
-        \frametitle{Thank you for your attention}
-        Spørsmål?
-    \end{frame}
+	\begin{frame}
+		\frametitle{TxManager}
+	\txManager
+	\end{frame}
+
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	% DbCtx
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\defverbatim[colored]\dbCtx{
+		\begin{kotlincode}
+				class DbCtx(val em: EntityManager) : AutoCloseable {
+					val transaction: EntityTransaction = em.transaction
+					init { transaction.begin() }
+
+					val person: PersonDao by lazy { PersonDao(em) }
+					val image: ImageDao by lazy { ImageDao(em) }
+					
+					override fun close() {
+						when {
+							transaction == null -> println("init error")
+							transaction.rollbackOnly -> {
+								LOG.warn("Rolling back tx")
+								transaction.rollback()
+							}
+							else -> transaction.commit()
+						}
+
+						if (em.isOpen) em.close()
+					}
+				}
+	\end{kotlincode}
+	}
+
+	\begin{frame}
+		\frametitle{DbCtx}
+	\dbCtx
+	\end{frame}
+
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	% PersonDao
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\defverbatim[colored]\personDao{
+		\begin{kotlincode}
+				class PersonDao(val em: EntityManager) {
+					fun persist(person: Person): Person {
+						em.persist(person)
+						return person
+					}
+
+					fun list(): List<Person> {
+						return em.createQuery("SELECT p from Person p", Person::class.java)
+							.resultList
+					}
+					
+					fun byId(id: Long?): Person {
+						return em
+							.createQuery("SELECT p from Person p where p.id=:id", Person::class.java)
+							.setParameter("id", id)
+							.singleResult
+					}
+					
+					fun deleteAll() {
+						em.createQuery("DELETE from Person")
+							.executeUpdate()
+					}
+				}
+	\end{kotlincode}
+	}
+
+	\begin{frame}
+		\frametitle{PersonDao}
+	\personDao
+	\end{frame}
+
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	% Demo 
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\begin{frame}
+		\frametitle{Demonstration}
+	\end{frame}
+
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	% The End
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\begin{frame}
+		\frametitle{Thank you for your attention}
+		Spørsmål?
+	\end{frame}
 
 \end{document}
 
-% vim: ts=4 expandtab
+% vim: ts=4 
