@@ -41,7 +41,9 @@ build/
 2026-03-10-functional-transactions/2026-03-10_Functional_Transactions.pdf
 2026-03-10-functional-transactions/2026-03-10_Functional_Transactions.snm
 2026-03-10-functional-transactions/2026-03-10_Functional_Transactions.toc
+2026-03-10-functional-transactions/_*minted
 2026-03-10-functional-transactions/_minted-2026-03-10_Functional_Transactions/
 2026-03-10-functional-transactions/modify
 2026-03-10-functional-transactions/texput.log
 
+.DS_Store
