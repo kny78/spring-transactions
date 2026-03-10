@@ -33,6 +33,4 @@ class PersonAnnotationResourceTest @Autowired constructor(
             personAnnotationResource.postPerson("Person $i")
         }
     }
-
-
 }

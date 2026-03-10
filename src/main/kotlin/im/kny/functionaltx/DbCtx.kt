@@ -33,14 +33,15 @@ class DbCtx(val entityManager: EntityManager) : AutoCloseable {
         @Suppress("SENSELESS_COMPARISON")
         when {
             transaction == null -> LOG.debug("Transaction is `null`, should not happen unless init \\{\\} failed.")
-            !transaction.rollbackOnly -> transaction.commit()
-            else -> {
+            transaction.rollbackOnly -> {
                 val msg = "Transaction is not committed or rolled back. Rolling back!"
                 LOG.warn(msg)
                 LOG.trace(msg, RuntimeException("Stacktrace"))
                 transaction.rollback()
             }
+            !transaction.rollbackOnly -> transaction.commit()
         }
+
         if (this.entityManager.isOpen) this.entityManager.close()
     }
 

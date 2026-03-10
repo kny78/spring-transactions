@@ -51,6 +51,6 @@ class PersonTxManagerResource {
     }
 
     companion object {
-        var slowImageDelay = 10_000L
+        var slowImageDelay = 1_000L
     }
 }
