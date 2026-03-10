@@ -1,4 +1,4 @@
-package im.kny.springtx
+package im.kny.functionaltx
 
 interface TxManager {
     /**

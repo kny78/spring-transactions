@@ -1,17 +1,12 @@
-package im.kny.springtx.txmanager
+package im.kny.functionaltx.txmanager
 
-import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import im.kny.springtx.Image
-import im.kny.springtx.Person
-import im.kny.springtx.TxManagerImpl
-import im.kny.springtx.annotation.PersonAnnotationResource
+import im.kny.functionaltx.Image
+import im.kny.functionaltx.Person
+import im.kny.functionaltx.TxManagerImpl
 import jakarta.inject.Inject
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType
-import jakarta.ws.rs.core.Response
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Path("/persons-tx-manager")
@@ -35,6 +30,7 @@ class PersonTxManagerResource {
         }
 
         val imageString = getSlowImage(person1.id!!)
+
         val person2 = txManager.autoCommitTx { dbCtx ->
             val image = dbCtx.image.persist(Image(imageString.toByteArray()))
             val personInTx = dbCtx.person.byId(person1.id)
@@ -46,7 +42,6 @@ class PersonTxManagerResource {
     }
 
     private fun getSlowImage(personId: Long): String {
-
         if(slowImageDelay > 0) {
             println("Waiting for image")
             Thread.sleep(slowImageDelay)

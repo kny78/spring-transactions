@@ -1,13 +1,9 @@
-package im.kny.springtx.txmanager
+package im.kny.functionaltx.txmanager
 
-import im.kny.springtx.TxManager
-import im.kny.springtx.spring.MySpringConfig
-import im.kny.springtx.txmanager.PersonTxManagerResource
-import jakarta.persistence.EntityManager
-import org.hibernate.internal.SessionImpl
+import im.kny.functionaltx.TxManager
+import im.kny.functionaltx.spring.MySpringConfig
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.postgresql.jdbc.PgConnection
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
@@ -28,7 +24,6 @@ class PersonTxManagerResourceTest @Autowired constructor(
     fun `different Tx Ok`() {
         val donald = personTxManagerResource.postPerson("Donald Duck")
         println(donald)
-        //Thread.sleep(1000L)
     }
 
     @Test

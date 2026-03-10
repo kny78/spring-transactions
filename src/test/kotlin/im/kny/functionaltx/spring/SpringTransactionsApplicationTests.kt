@@ -1,4 +1,4 @@
-package im.kny.springtx.spring
+package im.kny.functionaltx.spring
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest

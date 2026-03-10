@@ -1,6 +1,6 @@
-package im.kny.springtx
+package im.kny.functionaltx
 
-import im.kny.springtx.spring.MySpringConfig
+import im.kny.functionaltx.spring.MySpringConfig
 import jakarta.persistence.EntityManager
 import jakarta.persistence.EntityManagerFactory
 import org.hibernate.internal.SessionImpl

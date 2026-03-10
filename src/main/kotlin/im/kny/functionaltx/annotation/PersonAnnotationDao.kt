@@ -1,10 +1,11 @@
-package im.kny.springtx.txmanager
+package im.kny.functionaltx.annotation;
 
-import im.kny.springtx.Person
+import im.kny.functionaltx.Person
 import jakarta.persistence.EntityManager
+import org.springframework.stereotype.Component
 
-
-class PersonDao(val entityManager: EntityManager) {
+@Component
+class PersonAnnotationDao(val entityManager: EntityManager) {
 
     fun persist(person: Person): Person {
         entityManager.persist(person)

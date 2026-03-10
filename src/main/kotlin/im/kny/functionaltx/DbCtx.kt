@@ -1,7 +1,7 @@
-package im.kny.springtx
+package im.kny.functionaltx
 
-import im.kny.springtx.txmanager.ImageDao
-import im.kny.springtx.txmanager.PersonDao
+import im.kny.functionaltx.txmanager.ImageDao
+import im.kny.functionaltx.txmanager.PersonDao
 import jakarta.persistence.EntityManager
 import jakarta.persistence.EntityTransaction
 import org.hibernate.internal.SessionImpl

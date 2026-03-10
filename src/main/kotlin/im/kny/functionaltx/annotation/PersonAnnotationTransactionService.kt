@@ -1,7 +1,7 @@
-package im.kny.springtx.annotation
+package im.kny.functionaltx.annotation
 
-import im.kny.springtx.Image
-import im.kny.springtx.Person
+import im.kny.functionaltx.Image
+import im.kny.functionaltx.Person
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component

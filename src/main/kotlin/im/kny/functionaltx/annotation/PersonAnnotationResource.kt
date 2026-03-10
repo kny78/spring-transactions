@@ -1,7 +1,7 @@
-package im.kny.springtx.annotation
+package im.kny.functionaltx.annotation
 
-import im.kny.springtx.Person
-import im.kny.springtx.txmanager.PersonTxManagerResource
+import im.kny.functionaltx.Person
+import im.kny.functionaltx.txmanager.PersonTxManagerResource
 import jakarta.ws.rs.Consumes
 import jakarta.ws.rs.POST
 import jakarta.ws.rs.Path

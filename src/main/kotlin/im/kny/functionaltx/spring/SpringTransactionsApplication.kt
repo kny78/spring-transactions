@@ -1,4 +1,4 @@
-package im.kny.springtx.spring
+package im.kny.functionaltx.spring
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

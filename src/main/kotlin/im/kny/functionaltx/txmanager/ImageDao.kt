@@ -1,6 +1,6 @@
-package im.kny.springtx.txmanager
+package im.kny.functionaltx.txmanager
 
-import im.kny.springtx.Image
+import im.kny.functionaltx.Image
 import jakarta.persistence.EntityManager
 
 class ImageDao(val entityManager: EntityManager) {

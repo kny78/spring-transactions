@@ -1,9 +1,7 @@
-package im.kny.springtx.annotation
+package im.kny.functionaltx.annotation
 
-import im.kny.springtx.Person
-import im.kny.springtx.TxManager
-import im.kny.springtx.spring.MySpringConfig
-import im.kny.springtx.txmanager.PersonTxManagerResource
+import im.kny.functionaltx.TxManager
+import im.kny.functionaltx.spring.MySpringConfig
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest
 )
 class PersonAnnotationResourceTest @Autowired constructor(
     val personAnnotationResource: PersonAnnotationResource,
-    val personAnnotationDao: PersonAnnotationDao,
     val txManager: TxManager
 ) {
 
@@ -25,9 +22,7 @@ class PersonAnnotationResourceTest @Autowired constructor(
 
     @Test
     fun `different Tx Ok`() {
-
         val donald = personAnnotationResource.postPerson("Donald Duck")
-
         println(donald)
     }
 
