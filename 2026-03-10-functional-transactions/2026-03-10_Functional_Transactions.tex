@@ -7,6 +7,8 @@
 \usepackage[norsk]{babel}
 \usepackage{lipsum}
 
+% Background color for minted verbatim
+\definecolor{bg}{rgb}{0.95,0.95,0.95}
 \newminted{json}{fontsize=\scriptsize,
     linenos,
     numbersep=8pt,
@@ -55,6 +57,92 @@
 
 \begin{document}
     \frame{\titlepage}
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Transaction - What is it?
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \begin{frame}
+        \frametitle{Transaction - What is it?}
+        \begin{columns}[t]
+            \begin{column}{1\textwidth}
+                \begin{block}{Transaction}
+                        A transaction refers to a sequence of one or more operations
+                        (such as read, write, update, or delete) performed on the database
+                        as a single logical unit of work. 
+                \end{block}
+                \begin{block}{ACID}
+                        \begin{description}
+                            \item[Atomic:] Everything or nothing is committed
+                            \item[Consictent:] Always consistent with the schema after a transaction.
+                            \item[Isolation:] Transactions does not interfer with one another.
+                            \item[Durable:] Transactions are stored permanently and not lost.
+                        \end{description}
+                \end{block}
+            \end{column}
+        \end{columns}
+    \end{frame}
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Transactions in Java / Kotlin
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \defverbatim[colored]\transactionalExample{
+        \begin{kotlincode}
+                class ImageService(val em: EntityManager) {
+
+                    @Transactional
+                    fun doSimpleOperations(personId: Long, imageBytes: Bytearray){
+                            val person = em.findById(personId, Person::class.java)
+                            person.image = imageBytes
+                            em.persist(person)
+                    }
+
+                    @Transactional
+                    fun doAdvancedOperations(personId: Long, imageBytes: Bytearray){
+                            val person = em.findById(personId, Person::class.java)
+                            someOtherService.addImageToPerson(person)
+                            em.persist(person)
+                    }
+                }
+
+                class SomeOtherService(val em: EntityManager) {
+                        
+                    fun addImageToPerson(person): Person {
+                            // Is this function in a @Transaction?
+                    }
+                }
+    \end{kotlincode}
+    }
+
+
+    \begin{frame}
+        \frametitle{Example of @Transactional}
+    \transactionalExample
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Transactions in Java / Kotlin}
+        \begin{columns}[t]
+            \begin{column}{.55\textwidth}
+
+                \begin{block}{@Transactional}
+            @Transactional should begin a transaction before the method and commit after.
+
+            Exceptions that leave the method will rollback the transaction.
+                \end{block}
+            \end{column}
+            \begin{column}{.45\textwidth}
+                \begin{block}{Problems}
+                    \begin{enumerate}
+                        \item Am I in a transaction?
+            \item Need a \textbf{bean} to begin transaction
+                        \item If my transaction fails, hard to handle
+            \item Two Phase commit is over- and under-engineered
+                    \end{enumerate}
+                \end{block}
+            \end{column}
+        \end{columns}
+    \end{frame}
+
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Problem with declarative / annotation driven Transactions 
@@ -119,7 +207,6 @@
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % TxManager
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        \definecolor{bg}{rgb}{0.95,0.95,0.95}
     \defverbatim[colored]\txManager{
         \begin{kotlincode}
         class TxManager(val entityManagerFactory: EntityManagerFactory) {
